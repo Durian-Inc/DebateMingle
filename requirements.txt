@@ -7,3 +7,4 @@ migrate==0.3.8
 psycopg2==2.7.4
 SQLAlchemy==1.2.6
 Werkzeug==0.14.1
+flask-socketio==2.9.6
