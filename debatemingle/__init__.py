@@ -1,6 +1,12 @@
+# app/__init__.py
+
 from flask import Flask
-from debatemingle.zany.controllers import zany
 
-app = Flask(__name__)
+# Initialize the app
+app = Flask(__name__, instance_relative_config=True)
 
-app.register_blueprint(zany, url_prefix='/')
+# Load the views
+from debatemingle import routes
+
+# Load the config file
+app.config.from_object('config')
