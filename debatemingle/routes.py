@@ -1,10 +1,12 @@
-from debatemingle import app
+from debatemingle import app, socketio
 from debatemingle.utils import get_hash, auth_user
 from flask import Blueprint, render_template, request, render_template, session, flash, redirect
 
 app.secret_key = 'thats-tru-man'
 
-
+@socketio.on('okay')
+def handle_okay(message):
+    print(message)
 
 @app.route('/')
 def index():
