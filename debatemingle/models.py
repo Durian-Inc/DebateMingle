@@ -49,10 +49,10 @@ class VotedOn(db.Model):
         vote: The user's opinion of the topic. 
     """
     __tablename__ = "votedon"
-    
+
     person = db.Column('person', db.String, db.ForeignKey('account.username'), primary_key = True)
     topic = db.Column('topic', db.String, db.ForeignKey('topic.name'), primary_key = True)
-    vote = db.Column('vote', db.Integer, primary_key = True)
+    vote = db.Column('vote', db.Integer, nullable = False)
 
     def __init__(self, person, topic, vote):
         self.person = person

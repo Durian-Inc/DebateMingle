@@ -28,11 +28,14 @@ def add_user(username, password):
     @args: The username of the person. The user's unhashed password
     @return: None
     """
-    hash_pass = sha256(password.encode('utf-8')).hexdigest()
-    new_account = Account(username, hash_pass)
-    db.session.add(new_account)
-    db.session.commit()
-    print("Added the new user %s" %username)
+    try: 
+        hash_pass = sha256(password.encode('utf-8')).hexdigest()
+        new_account = Account(username, hash_pass)
+        db.session.add(new_account)
+        db.session.commit()
+        return True
+    except:
+        return False
 
 
 def add_response(username, topic, response):
@@ -44,3 +47,23 @@ def add_response(username, topic, response):
     new_vote = VotedOn(username, topic, response)
     models.db.session.add(new_vote)
     models.db.commit()
+
+def check_user_interation(current_username, current_topic):
+    """
+    @purpose: Check if the given user has interacted with the topic in someway. 
+    @args: The username of the current user. The topic in question
+    @returns: True if the interation exists and false if it does not.
+    """
+    result = VotedOn.query.filter_by(person = current_username, topic = current_topic).first()
+    if result:
+        return True
+    else:
+        return False
+
+def get_all_users():
+    """
+    @purpose: Get the usernames of all the users in the databaes
+    @args: None
+    @returns: A list of all the usernames
+    """
+    return [account.username for account in Account.query.all()]
