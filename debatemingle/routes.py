@@ -55,6 +55,14 @@ def check_length():
         setup_chat()
 
 
+@socketio.on('disconnect')
+def handle_disconnect():
+    sid = request.sid
+    socketio.disconnect(chats[sid])
+    del chats[chats[sid]]
+    del chats[sid]
+
+
 @socketio.on('connect')
 def handle_connect():
     users.append(request.sid)
