@@ -3,6 +3,7 @@ from debatemingle.models import *
 from functools import wraps
 from flask import redirect, flash
 from flask import session as browser_session
+from json import dumps
 
 def get_hash(password):
     """
@@ -47,9 +48,18 @@ def add_response(username, topic, response):
     @args: The user's unique ID number. The topic that has a new response. The user's response
     @return: None
     """
-    new_vote = VotedOn(username, topic, response)
-    models.db.session.add(new_vote)
-    models.db.commit()
+    result = Topic.query.filter_by(name = topic)
+    if result is not None and result.name == topic:
+        new_vote = VotedOn(username, topic, response)
+        db.session.add(new_vote)
+        db.commit()
+    else:
+        new_topic = Topic(topic)
+        db.session.add(new_topic)
+        db.commit()
+        new_vote = VotedOn(username, topic, response)
+        db.session.add(new_vote)
+        db.commit()
 
 def check_user_interaction(current_username, current_topic):
     """
@@ -65,28 +75,24 @@ def check_user_interaction(current_username, current_topic):
 
 def get_all_users(check_username = None):
     """
-    @purpose: Get the usernames of all the users in the databaes
+    @purpose: Get the prefernces of all the users in the databaes
     @args: None
-    @returns: A list of all the usernames
+    @returns: A list of all the usernames and their preferences
     """
-    if check_username is None:
-        return [account.username for account in Account.query.all()]
-    else:
-        usernames = {
-            "agree":[], 
-            "disagree":[]
-        }
-        current_user_topics = VotedOn.query.filter_by(person = check_username).all()
-        for topic in current_user_topics:
-            print (topic.topic)
-            for person in VotedOn.query.all():
-                if person.person != check_username:
-                    if person.vote == topic.vote:
-                        usernames["agree"].append(person.person)
-                    else:
-                        usernames["disagree"].append(person.person)
-            return topic.topic, usernames
-
+    data = {"username": None, "likes":[], "dislikes":[]}
+    users = []
+    for user in Account.query.all():
+        data['likes'].clear()
+        data['dislikes'].clear()
+        data['username'] = user.username
+        for curr_vote in VotedOn.query.all():
+            if curr_vote.person == user.username:
+                if curr_vote.vote == 0:
+                    data['dislikes'].append(curr_vote.topic)
+                elif curr_vote.vote == 1:
+                    data['likes'].append(curr_vote.topic)
+        users.append(dumps(data))
+    return users
 
 def login_required(func):
     """Wrap a function to enforce user authentication."""

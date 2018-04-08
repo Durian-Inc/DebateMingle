@@ -22,6 +22,18 @@ def chat_handler(room):
     return handler
 
 
+def match_preferences():
+    data = get_all_users()
+    for player in data:
+        if player in username:
+            for likes in player['likes']:
+                for player2 in data:
+                    if player2 in username:
+                        for dislikes in player2['dislikes']:
+                            if likes == dislikes:
+                                serious_chat(player, player2, likes)
+
+
 def get_opinions():
     opinions = ['👍', '👎']
     if random() > 0.5:
@@ -44,32 +56,35 @@ def setup_chat():
     id2 = silly_queue.pop(0)
     chats[id1] = id2
     chats[id2] = id1
+    name1 = [key for key, value in username.iteritems() if value == id1][0]
+    name2 = [key for key, value in username.iteritems() if value == id2][0]
     topic = random_topic()
     opinions = get_opinions()
     socketio.emit('okay', {
-        'name': 'Jeff',
+        'name': name1,
         'topic': topic,
         'opinion': opinions[0]
     }, room=id1)
     socketio.emit('okay', {
-        'name': 'Wangus',
+        'name': name2,
         'topic': topic,
         'opinion': opinions[1]
     }, room=id2)
 
 
-def serious_chat(id1, id2):
+def serious_chat(user1, user2, topic):
+    id1 = username[user1]
+    id2 = username[user2]
     chats[id1] = id2
     chats[id2] = id1
-    topic = serious_topic()
     opinions = get_opinions()
     socketio.emit('okay', {
-        'name': 'Jeff',
+        'name': user1,
         'topic': topic,
         'opinion': opinions[0]
     }, room=id1)
     socketio.emit('okay', {
-        'name': 'Wangus',
+        'name': user2,
         'topic': topic,
         'opinion': opinions[1]
     }, room=id2)
@@ -79,7 +94,12 @@ def check_length():
     if len(silly_queue) > 1:
         setup_chat()
     if len(serious_queue) > 1:
-        serious_chat()
+        match_preferences()
+
+
+@socketio.on('vote')
+def handle_vote(contents):
+    match_preferences()
 
 
 @socketio.on('disconnect')
@@ -115,6 +135,7 @@ def handle_msg(contents):
 @login_required
 def index():
     db.create_all()
+    print(get_all_users())
     return render_template("zany.html")
 
 
