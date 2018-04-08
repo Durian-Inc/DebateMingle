@@ -34,7 +34,7 @@ def random_topic():
     return thing[:-1]
 
 
-def serioius_topic():
+def serious_topic():
     thing = getline('./debatemingle/static/data/silly.csv', randrange(10))
     return thing[:-1]
 
@@ -61,7 +61,7 @@ def serious_chat():
     id2 = serious_queue.pop(0)
     chats[id1] = id2
     chats[id2] = id1
-    topic = serioius_topic()
+    topic = serious_topic()
     opinions = get_opinions()
     socketio.emit('okay', {
         'name': 'Jeff',
@@ -112,12 +112,14 @@ def handle_msg(contents):
 
 
 @app.route('/')
+@login_required
 def index():
     db.create_all()
     return render_template("zany.html")
 
 
 @app.route('/serious', methods=['GET', 'POST'])
+@login_required
 def serious():
     if request.method == 'GET':
         return render_template("serious.html", topic=random_topic())
@@ -141,9 +143,9 @@ def login():
             browser_session['username'] = check_username
             flash("Successfully logged in, " + browser_session['username'])
         else:
-            if add_user(request.form['username'], request.form['password']):
+            if add_user(check_username, check_passhash):
                 flash("Your account does not exist, creating one now!")
-                print("Good")
+                browser_session['username'] = check_username
                 return redirect('/', code=302)
             else:
                 flash("Wrong credentials")
@@ -151,6 +153,7 @@ def login():
 
 
 @app.route('/logout/', methods=['GET'])
+@login_required
 def signout():
     browser_session.pop("username")
     flash("Signed out successfully!")
