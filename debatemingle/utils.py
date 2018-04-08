@@ -48,9 +48,18 @@ def add_response(username, topic, response):
     @args: The user's unique ID number. The topic that has a new response. The user's response
     @return: None
     """
-    new_vote = VotedOn(username, topic, response)
-    models.db.session.add(new_vote)
-    models.db.commit()
+    result = Topic.query.filter_by(name = topic)
+    if result is not None and result.name == topic:
+        new_vote = VotedOn(username, topic, response)
+        db.session.add(new_vote)
+        db.commit()
+    else:
+        new_topic = Topic(topic)
+        db.session.add(new_topic)
+        db.commit()
+        new_vote = VotedOn(username, topic, response)
+        db.session.add(new_vote)
+        db.commit()
 
 def check_user_interation(current_username, current_topic):
     """
