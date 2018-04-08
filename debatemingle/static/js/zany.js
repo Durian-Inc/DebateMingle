@@ -1,17 +1,17 @@
-var options = {'dismissable': true}
-var elem = document.querySelector('.modal');
-var instance = M.Modal.init(elem, options);
-
 document.addEventListener("DOMContentLoaded", ()=>{
   // The page is fully loaded
-  document.getElementById("zany").addEventListener("click", function a() {
+    document.getElementById("zany").addEventListener("click", function a() {
     document.getElementById("zany").removeEventListener('click', a);
     console.log("Connecting to Queue");
     document.getElementById("zany").innerHTML = "Connecting...";
     var socket = io.connect('http://' + document.domain + ':' + location.port);
     socket.on('connect', function() {
-      socket.emit('okay', "griffin");
+      socket.emit('mode', "zany");
       socket.on('okay', (data)=>{
+        var options = {'dismissable': true}
+        var elem = document.querySelector('.modal');
+        var instance = M.Modal.init(elem, options);
+
         instance.open();
         console.log(data);
 
@@ -35,9 +35,9 @@ document.addEventListener("DOMContentLoaded", ()=>{
           document.getElementById("chat__field").value = "";
           addMessage(message);
         });
+        socket.on('disconnect', (reason)=>connectionDead(reason));
       });
     });
-    socket.on('disconnect', connectionDead());
   });
 });
 
@@ -70,10 +70,13 @@ function addMessage(message, received=0) {
   document.getElementsByClassName("chat__window")[0].appendChild(line);
 }
 
-function connectionDead() {
+function connectionDead(reason) {
+  var elem = document.querySelector('.modal');
+  var instance = M.Modal.getInstance(elem);
   document.querySelector('.modal-header').textContent = "Your chat session has ended!";
-  document.querySelector('.modal-text').textContent = "You will be sent away in 3 seconds.";
-  document.querySelector('.modal-topic').remove();
-  document.querySelector('.modal-emoji').textContent = 🙅‍♀️;
+  document.querySelector('.modal-text').textContent = "You will be sent away in 5 seconds.";
+  document.querySelector('.modal-topic').textContent = reason;
+  document.querySelector('.modal-emoji').textContent = "🙅";
   instance.open();
+  setTimeout(()=>location.reload(), 5000);
 }
