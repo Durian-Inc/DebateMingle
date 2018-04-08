@@ -130,6 +130,12 @@ def topics():
     if request.method == 'GET':
         topic_list = [line[0:-1] for line in open('./debatemingle/static/data/silly.csv', "r").readlines()]
         return dumps(topic_list)
+
+
+@app.route('/check_topic/<topic>', methods=['GET'])
+@login_required
+def check_topic(topic):
+    return str(check_user_interaction(browser_session['username'], topic))
             
 
 @app.route('/login/', methods=['GET', 'POST'])

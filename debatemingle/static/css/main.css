@@ -208,9 +208,27 @@ body {
   padding-right: 20px;
 }
 
+#swipy {
+  height: 425px;
+  width: 325px;
+  overflow: hidden;
+}
 
+#swipy .card {
+  height: 100%;
+  margin: 0;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 
-
+.card .card-title {
+  text-align: center;
+  width: 100%;
+  display: block;
+  font-size: 2rem;
+}
 
 
 

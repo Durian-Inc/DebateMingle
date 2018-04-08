@@ -51,7 +51,7 @@ def add_response(username, topic, response):
     models.db.session.add(new_vote)
     models.db.commit()
 
-def check_user_interation(current_username, current_topic):
+def check_user_interaction(current_username, current_topic):
     """
     @purpose: Check if the given user has interacted with the topic in someway. 
     @args: The username of the current user. The topic in question
@@ -59,7 +59,7 @@ def check_user_interation(current_username, current_topic):
     """
     result = VotedOn.query.filter_by(person = current_username, topic = current_topic).first()
     if result:
-        return True
+        return result.vote
     else:
         return False
 

@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", ()=>{
   // The page is fully loaded
+  var url = 'http://'+document.domain+':'+location.port;
   var element = document.getElementById("swipy");
   var hammertime = new Hammer(element);
   hammertime.on('pan', function(ev) {
@@ -10,6 +11,67 @@ document.addEventListener("DOMContentLoaded", ()=>{
   hammertime.on("panleft panright pandown", function(ev) {
     document.querySelector(".card-title").textContent = ev.type +" gesture detected.";
   });
+
+var cards;
+var request = new XMLHttpRequest();
+request.open('GET', url+'/topics', true);
+
+request.onload = function() {
+  if (request.status >= 200 && request.status < 400) {
+    // Success!
+    var topics = JSON.parse(request.responseText);
+    console.log(topics)
+    cards = topics.map((topic)=>{
+      var output = false;
+      var req = new XMLHttpRequest();
+      req.open('GET', url+'/check_topic/'+topic, false);
+      req.onload = function() {
+        if (req.status >= 200 && req.status < 400) {
+          // Success!
+          if (req.responseText == "False") {
+            output = topic;
+          }
+        } else {
+          // We reached our target server, but it returned an error
+          console.log("also rip");
+        }
+      };
+
+      req.onerror = function() {
+        // There was a connection error of some sort
+      };
+
+      req.send();
+      return output;
+      
+  });
+
+  } else {
+    // We reached our target server, but it returned an error
+    console.log('rip')
+  }
+  console.log(cards);
+
+};
+
+request.onerror = function() {
+  // There was a connection error of some sort
+};
+
+request.send();
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   //
     document.getElementById("serious").addEventListener("click", function a() {
