@@ -25,7 +25,8 @@
           {% block body %}
           {% endblock %}
         </div>
-        <script src="{{ url_for('static', filename='js/zany.js') }}"></script>
+        {% block js %}
+        {% endblock %}
         <script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.js') }}"></script>
         <script src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
     </body>

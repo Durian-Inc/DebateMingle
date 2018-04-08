@@ -2,9 +2,6 @@
 {% block title %}
 Zany Match | Debate Mingle
 {% endblock %}
-{% block js %}
-<script src="{{ url_for('static', filename='js/zany.js') }}"></script>
-{% endblock %}
 {% block body %}
 <div id="chat" class="hidden white">
   <div class="chat__header blue"><a id="resetchat" class="waves-effect waves-light btn-flat">New Chat</a><span class="username">Jimmy_Neutron</span></div>
@@ -27,9 +24,12 @@ Zany Match | Debate Mingle
   </div>
 </div>
 <div id="waiting" class="wrapper">
-  <h2 class="center-align name">Zany Match</h1>
+  <h2 class="center-align name">Serious Match</h1>
+  <a class="waves-effect waves-light btn">Updoot</a>
+  <a class="waves-effect waves-light btn">SUPER NO</a>
+  <a class="waves-effect waves-light btn">Downdoot</a>
   <div class="valign-wrapper">
-    <a id="zany" class="btn-floating btn-large waves-effect waves-light black"><i class="material-icons">chat</i></a>
+    <a id="serious" class="btn-floating btn-large waves-effect waves-light black"><i class="material-icons">chat</i></a>
   </div>
 </div>
 {% endblock %}

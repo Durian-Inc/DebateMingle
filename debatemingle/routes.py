@@ -78,6 +78,11 @@ def index():
     return render_template("zany.html")
 
 
+@app.route('/serious')
+def serious():
+    return render_template("serious.html")
+
+
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
