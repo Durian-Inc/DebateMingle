@@ -15,6 +15,7 @@ serious_queue = []
 chats = {}
 username = {}
 
+
 def chat_handler(room):
     def handler(contents):
         socketio.send(contents, room=room)
@@ -38,9 +39,7 @@ def serioius_topic():
     return thing[:-1]
 
 
-def setup_chat():
-    id1 = silly_queue.pop(0)
-    id2 = silly_queue.pop(0)
+def setup_chat(id1, id2):
     chats[id1] = id2
     chats[id2] = id1
     topic = random_topic()
