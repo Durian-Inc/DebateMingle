@@ -3,15 +3,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
   var url = 'http://'+document.domain+':'+location.port;
   var element = document.getElementById("swipy");
   var hammertime = new Hammer(element);
-  hammertime.on('pan', function(ev) {
-    console.log(ev);
-  });
-  hammertime.get('pan').set({ direction: Hammer.DIRECTION_ALL });
-  // listen to events...
-  hammertime.on("panleft panright pandown", function(ev) {
-    document.querySelector(".card-title").textContent = ev.type +" gesture detected.";
-  });
-
+  
 var cards;
 var request = new XMLHttpRequest();
 request.open('GET', url+'/topics', true);
@@ -51,6 +43,93 @@ request.onload = function() {
     console.log('rip')
   }
   console.log(cards);
+
+
+
+  document.querySelector(".card-title").textContent = cards.pop(0);
+
+  hammertime.on('pan', function(ev) {
+    console.log(ev);
+  });
+  hammertime.get('pan').set({ direction: Hammer.DIRECTION_ALL });
+  // listen to events...
+  hammertime.on("panleft panright pandown", function(ev) {
+    if (ev.type == "panleft") {
+      // no
+      var request = new XMLHttpRequest();
+      request.open('GET', url+"/add_response/"+document.querySelector(".card-title").textContent+"/0", false);
+
+      request.onload = function() {
+        if (request.status >= 200 && request.status < 400) {
+          // Success!
+          console.log("no");
+          var data = JSON.parse(request.responseText);
+        } else {
+          // We reached our target server, but it returned an error
+          
+        }
+      };
+
+      request.onerror = function() {
+        // There was a connection error of some sort
+      };
+
+      request.send();
+    } else if (ev.type == "panright") {
+      // yes
+      var request = new XMLHttpRequest();
+      request.open('GET', url+"/add_response/"+document.querySelector(".card-title").textContent+"/1", false);
+
+      request.onload = function() {
+        if (request.status >= 200 && request.status < 400) {
+          // Success!
+          console.log("yes");
+          var data = JSON.parse(request.responseText);
+        } else {
+          // We reached our target server, but it returned an error
+
+        }
+      };
+
+      request.onerror = function() {
+        // There was a connection error of some sort
+        
+      };
+
+      request.send();
+    } else if (ev.type == "pandown") {
+      // SUper no
+      var request = new XMLHttpRequest();
+      request.open('GET', url+"/add_response/"+document.querySelector(".card-title").textContent+"/2", false);
+
+      request.onload = function() {
+        if (request.status >= 200 && request.status < 400) {
+          // Success!
+          console.log("super no");
+          var data = JSON.parse(request.responseText);
+        } else {
+          // We reached our target server, but it returned an error
+
+        }
+      };
+
+      request.onerror = function() {
+        // There was a connection error of some sort
+        
+      };
+
+      request.send();
+    }
+    newthing = cards.pop(0);
+    document.querySelector(".card-title").textContent = newthing;
+  });
+
+
+
+
+
+
+
 
 };
 

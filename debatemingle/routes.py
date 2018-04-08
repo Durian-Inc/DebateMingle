@@ -174,6 +174,11 @@ def topics():
 @login_required
 def check_topic(topic):
     return str(check_user_interaction(browser_session['username'], topic))
+
+@app.route('/add_response/<username>/<topic>/<response>', methods=['GET'])
+@login_required
+def add_one(topic, response):
+    return add_response(session['username'], topic, response)
             
 
 @app.route('/login/', methods=['GET', 'POST'])
