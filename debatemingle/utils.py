@@ -10,6 +10,7 @@ def auth_user(username, hashed_password=None):
     @return: True or false if the user is validated
     """
     
+    
 
 def add_user(username, password):
     """
