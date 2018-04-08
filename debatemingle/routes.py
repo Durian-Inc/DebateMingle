@@ -115,6 +115,7 @@ def handle_msg(contents):
 @login_required
 def index():
     db.create_all()
+    print(get_all_users())
     return render_template("zany.html")
 
 
