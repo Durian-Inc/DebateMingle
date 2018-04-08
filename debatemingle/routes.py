@@ -1,9 +1,10 @@
+from debatemingle.utils import *
 from random import random, randrange
+from json import dumps
 from linecache import getline
-import threading
 from debatemingle import app, socketio
-from debatemingle.utils import get_hash, auth_user
-from flask import Blueprint, render_template, request, render_template, session, flash, redirect
+from flask import render_template, request, render_template, flash, redirect
+from flask import session as browser_session
 from flask_socketio import disconnect
 
 app.secret_key = 'thats-tru-man'
@@ -113,13 +114,22 @@ def handle_msg(contents):
 
 @app.route('/')
 def index():
+    db.create_all()
     return render_template("zany.html")
 
 
-@app.route('/serious')
+@app.route('/serious', methods=['GET', 'POST'])
 def serious():
-    return render_template("serious.html")
+    if request.method == 'GET':
+        return render_template("serious.html", topic=random_topic())
 
+
+@app.route('/topics', methods=['GET', 'POST'])
+def topics():
+    if request.method == 'GET':
+        topic_list = [line[0:-1] for line in open('./debatemingle/static/data/silly.csv', "r").readlines()]
+        return dumps(topic_list)
+            
 
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
@@ -128,16 +138,21 @@ def login():
     if request.method == 'POST':
         check_username = request.form['username']
         check_passhash = get_hash(request.form['password'])
-        if auth_user(check_username, check_passhash) is not None:
-            session['username'] = check_username
-            flash("Successfully logged in, " + session['username'])
+        if auth_user(check_username, check_passhash) is True:
+            browser_session['username'] = check_username
+            flash("Successfully logged in, " + browser_session['username'])
         else:
-            flash("Failed to log in, try again!")
+            if add_user(request.form['username'], request.form['password']):
+                flash("Your account does not exist, creating one now!")
+                print("Good")
+                return redirect('/', code=302)
+            else:
+                flash("Wrong credentials")
     return redirect('/', code=302)
 
 
 @app.route('/logout/', methods=['GET'])
 def signout():
-    session.pop("username")
+    browser_session.pop("username")
     flash("Signed out successfully!")
     return redirect("/", code=302)
