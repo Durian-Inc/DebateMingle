@@ -12,7 +12,7 @@ silly_queue = []
 serious_queue = []
 
 chats = {}
-
+username = {}
 
 def chat_handler(room):
     def handler(contents):
@@ -101,6 +101,7 @@ def handle_okay(message):
         silly_queue.append(request.sid)
     else:
         serious_queue.append(request.sid)
+    username[session['username']] = request.sid
     check_length()
 
 
