@@ -30,12 +30,12 @@ def add_user(username, password):
     print("Added the new user %s" %username)
 
 
-def add_response(userid, topic, response):
+def add_response(username, topic, response):
     """
     @purpose: Add a user's response to the database.
     @args: The user's unique ID number. The topic that has a new response. The user's response
     @return: None
     """
-    new_vote = VotedOn(userid, topic, response)
+    new_vote = VotedOn(username, topic, response)
     models.db.session.add(new_vote)
     models.db.commit()
