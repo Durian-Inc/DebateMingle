@@ -7,7 +7,7 @@ from flask import Blueprint, render_template, request, render_template, session,
 
 app.secret_key = 'thats-tru-man'
 
-users = []
+silly_queue = []
 
 chats = {}
 
@@ -31,8 +31,8 @@ def random_topic():
 
 
 def setup_chat():
-    id1 = users.pop(0)
-    id2 = users.pop(0)
+    id1 = silly_queue.pop(0)
+    id2 = silly_queue.pop(0)
     chats[id1] = id2
     chats[id2] = id1
     topic = random_topic()
@@ -51,13 +51,24 @@ def setup_chat():
 
 
 def check_length():
-    if len(users) > 1:
+    if len(silly_queue) > 1:
         setup_chat()
+
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    sid = request.sid
+    if sid in chats:
+        socketio.disconnect(chats[sid])
+        del chats[chats[sid]]
+        del chats[sid]
+    if sid in silly_queue:
+        del silly_queue[silly_queue.index(sid)]
 
 
 @socketio.on('connect')
 def handle_connect():
-    users.append(request.sid)
+    silly_queue.append(request.sid)
     check_length()
 
 
