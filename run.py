@@ -1,4 +1,4 @@
-from debatemingle import app 
+from debatemingle import app, socketio
 
 if __name__ == '__main__':
-    app.run() 
+    socketio.run(app)
