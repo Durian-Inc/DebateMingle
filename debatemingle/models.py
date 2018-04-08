@@ -1,21 +1,28 @@
-from debatemingle import db
+from debatemingle import app
+from flask_sqlalchemy import SQLAlchemy
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://@localhost/debate'
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+db = SQLAlchemy(app)
+
 class Account(db.Model):
     
     __tablename__ = "account"
-    id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String(80), nullable = False, unique = True)
-    password = db.Column(db.String(80) , nullable = False)
 
-    def __init__(self, name, password):
-        self.name = name
+    username = db.Column(db.String, nullable = False, unique = True, primary_key = True)
+    password = db.Column(db.String , nullable = False)
+
+    def __init__(self, username, password):
+        self.username = username
         self.password = password
 
     def __repr__(self):
-        return '<Account %r>' % (self.id)
+
+        return '<Account %r>' % (self.username)
 
 class Topic(db.Model):
-    
     __tablename__ = "topic"
+
     name = db.Column(db.String(80), primary_key = True)
 
     def __init__(self, name):
@@ -25,9 +32,8 @@ class Topic(db.Model):
         return '<Topic %r>' % (self.name)
         
 class VotedOn(db.Model):
-    
     __tablename__ = "votedon"
-    person = db.Column('person', db.Integer, db.ForeignKey('account.id'), primary_key = True)
+    person = db.Column('person', db.String, db.ForeignKey('account.username'), primary_key = True)
     topic = db.Column('topic', db.String, db.ForeignKey('topic.name'), primary_key = True)
     vote = db.Column('vote', db.Integer, primary_key = True)
 
