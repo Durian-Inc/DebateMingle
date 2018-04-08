@@ -20,7 +20,7 @@ def login():
     if request.method == 'POST':
         check_username = request.form['username']
         check_passhash = get_hash(request.form['password'])
-        if auth_user(check_username, check_passhash) is not None:
+        if auth_user(check_username, check_passhash) is True:
             browser_session['username'] = check_username
             flash("Successfully logged in, " + browser_session['username'])
         else:

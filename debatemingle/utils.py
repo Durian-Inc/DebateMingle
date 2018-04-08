@@ -3,14 +3,19 @@ from debatemingle import models
 def get_hash(password):
     return sha256(password.encode('utf-8')).hexdigest()
 
-def auth_user(username, hashed_password=None):
+def auth_user(check_username, check_password=None):
     """
     @purpose: Authenticate a user with their username and their hashed password.
     @args: The user's username. The hashed password.
     @return: True or false if the user is validated
     """
-    
-    
+    result = models.Account.query.filter_by(username=check_username).first() 
+    if result is not None and result.password == check_password:
+        return True
+    else:
+        return False
+    return False
+
 
 def add_user(username, password):
     """
