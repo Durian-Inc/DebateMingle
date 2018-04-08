@@ -130,7 +130,9 @@ body {
   margin: auto;
   width: 250px;
   height: 250px;
-  box-shadow: 0 6px 6px 0 rgba(0,0,0,0.22),0 9px 3px -6px rgba(0,0,0,0.26),0 3px 15px 0 rgba(0,0,0,0.4);
+  /*box-shadow: 0 6px 6px 0 rgba(0,0,0,0.22),0 9px 3px -6px rgba(0,0,0,0.26),0 3px 15px 0 rgba(0,0,0,0.4);*/
+  font-size: 1.4em;
+  line-height: 250px;
 }
 #zany i {
   line-height: 250px;

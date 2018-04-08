@@ -1,7 +1,9 @@
 document.addEventListener("DOMContentLoaded", ()=>{
   // The page is fully loaded
-  document.getElementById("zany").addEventListener("click", ()=>{
+  document.getElementById("zany").addEventListener("click", function a() {
+    document.getElementById("zany").removeEventListener('click', a);
     console.log("Connecting to Queue");
+    document.getElementById("zany").innerHTML = "Connecting...";
     var socket = io.connect('http://' + document.domain + ':' + location.port);
     socket.on('connect', function() {
       socket.emit('okay', "griffin");

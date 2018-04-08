@@ -11,11 +11,8 @@ users = []
 
 
 def chat_handler(room):
-    print("CREATING", room)
     def handler(contents):
-        print("SENDING", contents, "TO", room)
-        room.emit('msg', contents)
-        # socketio.send(contents, room=room)
+        socketio.send(contents, room=room)
     return handler
 
 
@@ -33,13 +30,9 @@ def random_topic():
 
 def setup_chat():
     id1 = users.pop(0)
-    print("ID1", id1)
     id2 = users.pop(0)
-    print("ID2", id2)
-    handle1 = chat_handler(id1)
-    handle2 = chat_handler(id2)
-    socketio.on_event('msg', handle1, namespace=id2)
-    socketio.on_event('msg', handle2, namespace=id1)
+    socketio.on_event('msg', chat_handler(id1), namespace=id2)
+    socketio.on_event('msg', chat_handler(id2), namespace=id1)
     topic = random_topic()
     opinions = get_opinions()
     socketio.emit('okay', {
@@ -52,14 +45,12 @@ def setup_chat():
         'topic': topic,
         'opinion': opinions[1]
     }, room=id2)
-    print('done')
+    print('Chat has been set up for 2 users')
 
 
 def check_length():
     if len(users) > 1:
         setup_chat()
-    t = threading.Timer(1, check_length)
-    t.start()
 
 
 @socketio.on('connect')
