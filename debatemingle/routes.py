@@ -9,6 +9,8 @@ app.secret_key = 'thats-tru-man'
 
 users = []
 
+chats = {}
+
 
 def chat_handler(room):
     def handler(contents):
@@ -31,8 +33,8 @@ def random_topic():
 def setup_chat():
     id1 = users.pop(0)
     id2 = users.pop(0)
-    socketio.on_event('msg', chat_handler(id1), namespace=id2)
-    socketio.on_event('msg', chat_handler(id2), namespace=id1)
+    chats[id1] = id2
+    chats[id2] = id1
     topic = random_topic()
     opinions = get_opinions()
     socketio.emit('okay', {
@@ -62,6 +64,12 @@ def handle_connect():
 @socketio.on('okay')
 def handle_okay(message):
     print("Recived {} from {}".format(message, request.sid))
+
+
+@socketio.on('msg')
+def handle_msg(contents):
+    recipient = chats[request.sid]
+    socketio.emit('msg', data=contents, room=recipient)
 
 
 @app.route('/')
