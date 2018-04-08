@@ -76,7 +76,6 @@ app.secret_key = 'thats-tru-man'
 @app.route('/')
 def index():
     db.create_all()
-    print(get_all_users())
     return render_template("zany.html")
 
 
@@ -111,7 +110,7 @@ def login():
             else:
                 print ("That username is taken")
     return redirect('/', code=302)
-    
+
 @app.route('/logout/', methods=['GET'])
 def signout():
     browser_session.pop("username")

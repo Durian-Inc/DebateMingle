@@ -60,10 +60,26 @@ def check_user_interation(current_username, current_topic):
     else:
         return False
 
-def get_all_users():
+def get_all_users(check_username = None):
     """
     @purpose: Get the usernames of all the users in the databaes
     @args: None
     @returns: A list of all the usernames
     """
-    return [account.username for account in Account.query.all()]
+    if check_username is None:
+        return [account.username for account in Account.query.all()]
+    else:
+        usernames = {
+            "agree":[], 
+            "disagree":[]
+        }
+        current_user_topics = VotedOn.query.filter_by(person = check_username).all()
+        for topic in current_user_topics:
+            print (topic.topic)
+            for person in VotedOn.query.all():
+                if person.person != check_username:
+                    if person.vote == topic.vote:
+                        usernames["agree"].append(person.person)
+                    else:
+                        usernames["disagree"].append(person.person)
+            return topic.topic, usernames
