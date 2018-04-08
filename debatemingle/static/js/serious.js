@@ -82,6 +82,7 @@ request.send();
     socket.on('connect', function() {
       socket.emit('mode', "serious");
       socket.on('okay', (data)=>{
+        console.log("RECEIEVED");
         var options = {'dismissable': true}
         var elem = document.querySelector('.modal');
         var instance = M.Modal.init(elem, options);

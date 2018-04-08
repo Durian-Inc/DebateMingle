@@ -1,6 +1,6 @@
 from debatemingle.utils import *
 from random import random, randrange
-from json import dumps
+from json import dumps, loads
 from linecache import getline
 from debatemingle import app, socketio
 from flask import render_template, request, render_template, flash, redirect
@@ -24,14 +24,20 @@ def chat_handler(room):
 
 def match_preferences():
     data = get_all_users()
+    print(username)
+    print(data)
     for player in data:
-        if player in username:
+        player = loads(player)
+        if player['username'] in username:
             for likes in player['likes']:
                 for player2 in data:
-                    if player2 in username:
+                    player2 = loads(player2)
+                    if player2['username'] in username:
                         for dislikes in player2['dislikes']:
                             if likes == dislikes:
-                                serious_chat(player, player2, likes)
+                                print("Match")
+                                serious_chat(player['username'],
+                                             player2['username'], likes)
 
 
 def get_opinions():
@@ -56,8 +62,10 @@ def setup_chat():
     id2 = silly_queue.pop(0)
     chats[id1] = id2
     chats[id2] = id1
-    name1 = [key for key, value in username.iteritems() if value == id1][0]
-    name2 = [key for key, value in username.iteritems() if value == id2][0]
+    # name1 = [key for key, value in username.items() if value == id1][0]
+    # name2 = [key for key, value in username.items() if value == id2][0]
+    name1 = "Frank"
+    name2 = "George"
     topic = random_topic()
     opinions = get_opinions()
     socketio.emit('okay', {
@@ -94,6 +102,7 @@ def check_length():
     if len(silly_queue) > 1:
         setup_chat()
     if len(serious_queue) > 1:
+        print("running")
         match_preferences()
 
 
@@ -122,6 +131,7 @@ def handle_mode(message):
     else:
         serious_queue.append(request.sid)
     username[browser_session['username']] = request.sid
+    print(username)
     check_length()
 
 
