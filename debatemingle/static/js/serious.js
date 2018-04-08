@@ -93,12 +93,17 @@ request.send();
         document.getElementsByClassName("username")[0].textContent = data.name;
         document.querySelector('.modal-topic').textContent = data.topic;
         document.querySelector('.modal-emoji').textContent = data.opinion;
+        document.querySelector('.header-topic').textContent = data.topic;
+        document.querySelector('.header-emoji').textContent = data.opinion;
+
 
         instance.open()
         chatBegin();
         socket.on('msg', (datum)=>{
           console.log(datum);
-          addMessage(datum, 1)
+          addMessage(datum, 1);
+          var objDiv = document.querySelector(".chat__window");
+          objDiv.scrollTop = objDiv.scrollHeight;
         });
 
         document.getElementById("submitbtn")
@@ -109,6 +114,8 @@ request.send();
           socket.emit('msg', message);
           document.getElementById("chat__field").value = "";
           addMessage(message);
+          var objDiv = document.querySelector(".chat__window");
+          objDiv.scrollTop = objDiv.scrollHeight;
         });
         socket.on('disconnect', (reason)=>connectionDead(reason));
       });

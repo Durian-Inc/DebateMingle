@@ -161,6 +161,7 @@ body {
   flex: 1;
   margin: 0;
   padding: 10px;
+  overflow: auto;
 }
 
 .chat__footer {
@@ -230,8 +231,40 @@ body {
   font-size: 2rem;
 }
 
+.header-whoops {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  line-height: 60px;
+}
+.header-whoops p {
+  margin: 0;
+}
+.header-topic {
+  padding-left: 4px;
+}
+.header-emoji {
+  padding-left: 4px;
+}
+.stance {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding-right: 15px;
+  height: 60px;
+  margin: 0;
+  line-height: 60px;
+}
 
-
+.corner-link {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  line-height: 40px;
+  padding: 20px;
+}
 
 
 

@@ -16,16 +16,8 @@ chats = {}
 username = {}
 
 
-def chat_handler(room):
-    def handler(contents):
-        socketio.send(contents, room=room)
-    return handler
-
-
 def match_preferences():
     data = get_all_users()
-    print(username)
-    print(data)
     for player in data:
         player = loads(player)
         if player['username'] in username:
@@ -48,7 +40,7 @@ def get_opinions():
 
 
 def random_topic():
-    thing = getline('./debatemingle/static/data/silly.csv', randrange(20))
+    thing = getline('./debatemingle/static/data/silly.csv', randrange(18))
     return thing[:-1]
 
 
@@ -81,6 +73,8 @@ def setup_chat():
 
 
 def serious_chat(user1, user2, topic):
+    serious_queue.pop(0)
+    serious_queue.pop(0)
     id1 = username[user1]
     id2 = username[user2]
     chats[id1] = id2
@@ -116,12 +110,21 @@ def handle_disconnect():
     sid = request.sid
     print("reached disconnect")
     if sid in chats:
-        print("disconnecting")
+        print("CHATS:", chats)
         disconnect(chats[sid])
-        del chats[chats[sid]]
-        del chats[sid]
+        try:
+            del chats[chats[sid]]
+        except KeyError:
+            pass
+        try:
+            del chats[sid]
+        except KeyError:
+            pass
     if sid in silly_queue:
         del silly_queue[silly_queue.index(sid)]
+    if sid in serious_queue:
+        del serious_queue[serious_queue.index(sid)]
+
 
 
 @socketio.on('mode')
@@ -131,12 +134,16 @@ def handle_mode(message):
     else:
         serious_queue.append(request.sid)
     username[browser_session['username']] = request.sid
-    print(username)
+    print("USERNAME:", username)
+    print("SILLY_QUEUE:", silly_queue)
+    print("SERIOUS_QUEUE:", serious_queue)
+    print("CHATS:", chats)
     check_length()
 
 
 @socketio.on('msg')
 def handle_msg(contents):
+    print(contents)
     recipient = chats[request.sid]
     socketio.emit('msg', data=contents, room=recipient)
 

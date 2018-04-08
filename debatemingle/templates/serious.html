@@ -8,8 +8,16 @@ Zany Match | Debate Mingle
 {% endblock %}
 {% block body %}
 <div id="chat" class="hidden white">
-  <div class="chat__header blue"><a id="resetchat" class="waves-effect waves-light btn-flat">New Chat</a><span class="username">Jimmy_Neutron</span>
-    <!-- Modal Structure -->
+  <div class="chat__header blue">
+    <a href="/" id="resetchat" class="waves-effect waves-light btn-flat">New Chat</a>
+    <span class="username"></span>
+    <div class="header-whoops">
+      <p>Topic: <span class="header-topic">Topic</span></p>
+    </div>
+    <p class="stance">Your stance: <span class="header-emoji">Opinion</span></p>
+
+  </div>
+  <!-- Modal Structure -->
   <div id="modal1" class="modal">
     <div class="modal-content center-align">
       <h5 class="modal-header">You will be discussing:</h5>
@@ -23,16 +31,12 @@ Zany Match | Debate Mingle
       <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
     </div>
   </div>
-
-  </div>
   <ul class="chat__window">
-    <li class="chat__line"><div class="bubble">Hey man, where are you?</div></li>
-    <li class="chat__line"><div class="theirs bubble">I'm over here, listening to Huey Lewis and the News! I'm over here, listening to Huey Lewis and the News! I'm over here, listening to Huey Lewis and the News! I'm over here, listening to Huey Lewis and the News!</div></li>
   </ul>
   <div class="chat__footer">
     <form class="col s12">
-      <div class="row">
-        <div class="input-field col s6">
+      <div class="sendmessage">
+        <div class="input-field">
           <input id="chat__field" type="text" data-length="120">
           <label for="chat__field">Write a message</label>
         </div>

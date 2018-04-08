@@ -7,7 +7,15 @@ Zany Match | Debate Mingle
 {% endblock %}
 {% block body %}
 <div id="chat" class="hidden white">
-  <div class="chat__header blue"><a href="/" id="resetchat" class="waves-effect waves-light btn-flat">New Chat</a><span class="username"></span></div>
+  <div class="chat__header blue">
+    <a href="/" id="resetchat" class="waves-effect waves-light btn-flat">New Chat</a>
+    <span class="username"></span>
+    <div class="header-whoops">
+      <p>Topic: <span class="header-topic">Topic</span></p>
+    </div>
+    <p class="stance">Your stance: <span class="header-emoji">Opinion</span></p>
+
+  </div>
   <!-- Modal Structure -->
   <div id="modal1" class="modal">
     <div class="modal-content center-align">
@@ -43,6 +51,7 @@ Zany Match | Debate Mingle
   <div class="valign-wrapper">
     <a id="zany" class="btn-floating btn-large waves-effect waves-light black z-depth-4"><i class="material-icons">chat</i></a>
   </div>
+  <a href="/serious" class="corner-link white-text">Serious Mode</a>
 </div>
 {% endblock %}
 
