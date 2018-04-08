@@ -25,7 +25,7 @@ class Account(db.Model):
         return '<Account %r>' % (self.username)
 
 class Topic(db.Model):
-    """Collection of topics that are in the datanase. 
+    """Topics that are in the datanase. 
 
     Attributes:
         name: The unique name of the topic.
@@ -41,7 +41,7 @@ class Topic(db.Model):
         return '<Topic %r>' % (self.name)
         
 class VotedOn(db.Model):
-    """Model to hold to correlate each user with how they feel for each topic. 
+    """The correlation between the user and each topic they have interacted with.
 
     Attributes:
         person: The name of the person for a given entry.
@@ -49,6 +49,7 @@ class VotedOn(db.Model):
         vote: The user's opinion of the topic. 
     """
     __tablename__ = "votedon"
+    
     person = db.Column('person', db.String, db.ForeignKey('account.username'), primary_key = True)
     topic = db.Column('topic', db.String, db.ForeignKey('topic.name'), primary_key = True)
     vote = db.Column('vote', db.Integer, primary_key = True)

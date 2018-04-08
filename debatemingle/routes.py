@@ -3,13 +3,11 @@ from json import dumps
 from linecache import getline
 import threading
 from debatemingle import app, socketio
-from debatemingle.utils import get_hash, auth_user
 from flask import Blueprint, render_template, request, render_template, flash, redirect
 from flask import session as browser_session
-from debatemingle import models, utils
+from debatemingle.utils import *
 
 users = []
-
 
 def chat_handler(room):
     print("CREATING", room)
@@ -77,7 +75,7 @@ app.secret_key = 'thats-tru-man'
 
 @app.route('/')
 def index():
-    models.db.create_all()
+    db.create_all()
     return render_template("zany.html")
 
 
@@ -106,7 +104,7 @@ def login():
             flash("Successfully logged in, " + browser_session['username'])
         else:
             flash("Your account does not exist, creating one now!")
-            utils.add_user(request.form['username'], request.form['password'])
+            add_user(request.form['username'], request.form['password'])
     return redirect('/', code=302)
 
 
