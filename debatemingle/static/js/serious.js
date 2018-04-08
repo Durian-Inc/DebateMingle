@@ -1,23 +1,25 @@
 document.addEventListener("DOMContentLoaded", ()=>{
   // The page is fully loaded
-  document.getElem
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  document.getElementById("serious").addEventListener("click", function a() {
+    document.getElementById("serious").addEventListener("click", function a() {
     document.getElementById("serious").removeEventListener('click', a);
     console.log("Connecting to Queue");
     document.getElementById("serious").innerHTML = "Connecting...";
     var socket = io.connect('http://' + document.domain + ':' + location.port);
     socket.on('connect', function() {
+      socket.emit('mode', "serious");
       socket.on('okay', (data)=>{
+        var options = {'dismissable': true}
+        var elem = document.querySelector('.modal');
+        var instance = M.Modal.init(elem, options);
+
+        instance.open();
         console.log(data);
+
         document.getElementsByClassName("username")[0].textContent = data.name;
-        addMessage("You will be talking about "+data.topic+". You feel very "+data.opinion+" about this topic!");
+        document.querySelector('.modal-topic').textContent = data.topic;
+        document.querySelector('.modal-emoji').textContent = data.opinion;
+
+        instance.open()
         chatBegin();
         socket.on('msg', (datum)=>{
           console.log(datum);
@@ -30,9 +32,10 @@ document.addEventListener("DOMContentLoaded", ()=>{
           var message = document.getElementById("chat__field").value;
           console.log(message);
           socket.emit('msg', message);
-            document.getElementById("chat__field").value = "";
+          document.getElementById("chat__field").value = "";
+          addMessage(message);
         });
-
+        socket.on('disconnect', (reason)=>connectionDead(reason));
       });
     });
   });
@@ -65,4 +68,15 @@ function addMessage(message, received=0) {
   line.appendChild(bubble);
 
   document.getElementsByClassName("chat__window")[0].appendChild(line);
+}
+
+function connectionDead(reason) {
+  var elem = document.querySelector('.modal');
+  var instance = M.Modal.getInstance(elem);
+  document.querySelector('.modal-header').textContent = "Your chat session has ended!";
+  document.querySelector('.modal-text').textContent = "You will be sent away in 5 seconds.";
+  document.querySelector('.modal-topic').textContent = reason;
+  document.querySelector('.modal-emoji').textContent = "🙅";
+  instance.open();
+  setTimeout(()=>location.reload(), 5000);
 }

@@ -4,6 +4,7 @@ import threading
 from debatemingle import app, socketio
 from debatemingle.utils import get_hash, auth_user
 from flask import Blueprint, render_template, request, render_template, session, flash, redirect
+from flask_socketio import disconnect
 
 app.secret_key = 'thats-tru-man'
 
@@ -58,8 +59,10 @@ def check_length():
 @socketio.on('disconnect')
 def handle_disconnect():
     sid = request.sid
+    print("reached disconnect")
     if sid in chats:
-        socketio.disconnect(chats[sid])
+        print("disconnecting")
+        disconnect(chats[sid])
         del chats[chats[sid]]
         del chats[sid]
     if sid in silly_queue:

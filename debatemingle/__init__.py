@@ -5,7 +5,7 @@ from flask_socketio import SocketIO
 
 # Initialize the app
 app = Flask(__name__, instance_relative_config=True)
-socketio = SocketIO(app)
+socketio = SocketIO(app, async_mode='eventlet')
 
 # Load the views
 from debatemingle import routes
