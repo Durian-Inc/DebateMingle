@@ -1,5 +1,9 @@
 from hashlib import sha256
 from debatemingle.models import *
+from functools import wraps
+from flask import redirect, flash
+from flask import session as browser_session
+
 def get_hash(password):
     """
     @purpose: Hash a given password to make sure we have tip top security.
@@ -29,8 +33,7 @@ def add_user(username, password):
     @return: None
     """
     try: 
-        hash_pass = sha256(password.encode('utf-8')).hexdigest()
-        new_account = Account(username, hash_pass)
+        new_account = Account(username, password)
         db.session.add(new_account)
         db.session.commit()
         return True
@@ -83,3 +86,15 @@ def get_all_users(check_username = None):
                     else:
                         usernames["disagree"].append(person.person)
             return topic.topic, usernames
+
+
+def login_required(func):
+    """Wrap a function to enforce user authentication."""
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if 'username' in browser_session:
+            return func(*args, **kwargs)
+        else:
+            flash("You must be logged in to access that page.", 'danger')
+            return redirect('/login')
+    return wrapper
