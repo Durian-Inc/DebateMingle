@@ -8,6 +8,7 @@ from flask import Blueprint, render_template, request, render_template, session,
 app.secret_key = 'thats-tru-man'
 
 silly_queue = []
+serious_queue = []
 
 chats = {}
 
@@ -30,6 +31,11 @@ def random_topic():
     return thing[:-1]
 
 
+def serioius_topic():
+    thing = getline('./debatemingle/static/data/silly.csv', randrange(10))
+    return thing[:-1]
+
+
 def setup_chat():
     id1 = silly_queue.pop(0)
     id2 = silly_queue.pop(0)
@@ -47,12 +53,32 @@ def setup_chat():
         'topic': topic,
         'opinion': opinions[1]
     }, room=id2)
-    print('Chat has been set up for 2 users')
+
+
+def serious_chat():
+    id1 = serious_queue.pop(0)
+    id2 = serious_queue.pop(0)
+    chats[id1] = id2
+    chats[id2] = id1
+    topic = serioius_topic()
+    opinions = get_opinions()
+    socketio.emit('okay', {
+        'name': 'Jeff',
+        'topic': topic,
+        'opinion': opinions[0]
+    }, room=id1)
+    socketio.emit('okay', {
+        'name': 'Wangus',
+        'topic': topic,
+        'opinion': opinions[1]
+    }, room=id2)
 
 
 def check_length():
     if len(silly_queue) > 1:
         setup_chat()
+    if len(serious_queue) > 1:
+        serious_chat()
 
 
 @socketio.on('disconnect')
@@ -66,15 +92,13 @@ def handle_disconnect():
         del silly_queue[silly_queue.index(sid)]
 
 
-@socketio.on('connect')
-def handle_connect():
-    silly_queue.append(request.sid)
-    check_length()
-
-
 @socketio.on('okay')
 def handle_okay(message):
-    print("Recived {} from {}".format(message, request.sid))
+    if message == 'zany':
+        silly_queue.append(request.sid)
+    else:
+        serious_queue.append(request.sid)
+    check_length()
 
 
 @socketio.on('msg')
