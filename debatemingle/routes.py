@@ -95,13 +95,13 @@ def handle_disconnect():
         del silly_queue[silly_queue.index(sid)]
 
 
-@socketio.on('okay')
-def handle_okay(message):
+@socketio.on('mode')
+def handle_mode(message):
     if message == 'zany':
         silly_queue.append(request.sid)
     else:
         serious_queue.append(request.sid)
-    username[session['username']] = request.sid
+    username[browser_session['username']] = request.sid
     check_length()
 
 
