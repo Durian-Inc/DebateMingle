@@ -39,7 +39,9 @@ def serious_topic():
     return thing[:-1]
 
 
-def setup_chat(id1, id2):
+def setup_chat():
+    id1 = silly_queue.pop(0)
+    id2 = silly_queue.pop(0)
     chats[id1] = id2
     chats[id2] = id1
     topic = random_topic()
@@ -56,9 +58,7 @@ def setup_chat(id1, id2):
     }, room=id2)
 
 
-def serious_chat():
-    id1 = serious_queue.pop(0)
-    id2 = serious_queue.pop(0)
+def serious_chat(id1, id2):
     chats[id1] = id2
     chats[id2] = id1
     topic = serious_topic()
