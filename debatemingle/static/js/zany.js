@@ -1,3 +1,7 @@
+var options = {'dismissable': true}
+var elem = document.querySelector('.modal');
+var instance = M.Modal.init(elem, options);
+
 document.addEventListener("DOMContentLoaded", ()=>{
   // The page is fully loaded
   document.getElementById("zany").addEventListener("click", function a() {
@@ -8,9 +12,14 @@ document.addEventListener("DOMContentLoaded", ()=>{
     socket.on('connect', function() {
       socket.emit('okay', "griffin");
       socket.on('okay', (data)=>{
+        instance.open();
         console.log(data);
+
         document.getElementsByClassName("username")[0].textContent = data.name;
-        addMessage("You will be talking about "+data.topic+". You feel very "+data.opinion+" about this topic!");
+        document.querySelector('.modal-topic').textContent = data.topic;
+        document.querySelector('.modal-emoji').textContent = data.opinion;
+
+        instance.open()
         chatBegin();
         socket.on('msg', (datum)=>{
           console.log(datum);
@@ -23,11 +32,12 @@ document.addEventListener("DOMContentLoaded", ()=>{
           var message = document.getElementById("chat__field").value;
           console.log(message);
           socket.emit('msg', message);
-            document.getElementById("chat__field").value = "";
+          document.getElementById("chat__field").value = "";
+          addMessage(message);
         });
-
       });
     });
+    socket.on('disconnect', connectionDead());
   });
 });
 
@@ -58,4 +68,12 @@ function addMessage(message, received=0) {
   line.appendChild(bubble);
 
   document.getElementsByClassName("chat__window")[0].appendChild(line);
+}
+
+function connectionDead() {
+  document.querySelector('.modal-header').textContent = "Your chat session has ended!";
+  document.querySelector('.modal-text').textContent = "You will be sent away in 3 seconds.";
+  document.querySelector('.modal-topic').remove();
+  document.querySelector('.modal-emoji').textContent = 🙅‍♀️;
+  instance.open();
 }
