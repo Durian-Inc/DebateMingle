@@ -1,16 +1,31 @@
-console.log("hello");
 document.addEventListener("DOMContentLoaded", ()=>{
   // The page is fully loaded
   document.getElementById("zany").addEventListener("click", ()=>{
-    console.log("hello");
+    console.log("Connecting to Queue");
     var socket = io.connect('http://' + document.domain + ':' + location.port);
     socket.on('connect', function() {
       socket.emit('okay', "griffin");
       socket.on('okay', (data)=>{
         console.log(data);
+        document.getElementsByClassName("username")[0].textContent = data.name;
+        addMessage("You will be talking about "+data.topic+". You feel very "+data.opinion+" about this topic!");
+        chatBegin();
+        socket.on('msg', (datum)=>{
+          console.log(datum);
+          addMessage(datum, 1)
+        });
+
+        document.getElementById("submitbtn")
+          .addEventListener("click", function(event) {
+          event.preventDefault();
+          var message = document.getElementById("chat__field").value;
+          console.log(message);
+          socket.emit('msg', message);
+            document.getElementById("chat__field").value = "";
+        });
+
       });
     });
-    chatBegin();
   });
 });
 
@@ -31,7 +46,7 @@ function tag(name, attrs) {
   return el;
 }
 
-function addMessage(message, received) {
+function addMessage(message, received=0) {
   var theirs = " theirs".repeat(Boolean(received));
 
   var line = tag('li', {'class':'chat__line'});

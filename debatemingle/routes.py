@@ -11,8 +11,11 @@ users = []
 
 
 def chat_handler(room):
+    print("CREATING", room)
     def handler(contents):
-        socketio.send(contents, room=room)
+        print("SENDING", contents, "TO", room)
+        room.emit('msg', contents)
+        # socketio.send(contents, room=room)
     return handler
 
 
@@ -24,14 +27,19 @@ def get_opinions():
 
 
 def random_topic():
-    return getline('/static/data/silly.csv', randrange(20))
+    thing = getline('./debatemingle/static/data/silly.csv', randrange(20))
+    return thing[:-1]
 
 
 def setup_chat():
     id1 = users.pop(0)
+    print("ID1", id1)
     id2 = users.pop(0)
-    socketio.on_event('msg', chat_handler(id1), namespace=id2)
-    socketio.on_event('msg', chat_handler(id2), namespace=id1)
+    print("ID2", id2)
+    handle1 = chat_handler(id1)
+    handle2 = chat_handler(id2)
+    socketio.on_event('msg', handle1, namespace=id2)
+    socketio.on_event('msg', handle2, namespace=id1)
     topic = random_topic()
     opinions = get_opinions()
     socketio.emit('okay', {
@@ -54,12 +62,10 @@ def check_length():
     t.start()
 
 
-check_length()
-
-
 @socketio.on('connect')
 def handle_connect():
     users.append(request.sid)
+    check_length()
 
 
 @socketio.on('okay')
