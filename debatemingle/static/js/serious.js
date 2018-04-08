@@ -1,5 +1,17 @@
 document.addEventListener("DOMContentLoaded", ()=>{
   // The page is fully loaded
+  var element = document.getElementById("swipy");
+  var hammertime = new Hammer(element);
+  hammertime.on('pan', function(ev) {
+    console.log(ev);
+  });
+  hammertime.get('pan').set({ direction: Hammer.DIRECTION_ALL });
+  // listen to events...
+  hammertime.on("panleft panright pandown", function(ev) {
+    document.querySelector(".card-title").textContent = ev.type +" gesture detected.";
+  });
+
+  //
     document.getElementById("serious").addEventListener("click", function a() {
     document.getElementById("serious").removeEventListener('click', a);
     console.log("Connecting to Queue");

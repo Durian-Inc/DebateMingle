@@ -3,6 +3,8 @@
 Zany Match | Debate Mingle
 {% endblock %}
 {% block js %}
+<script src="{{ url_for('static', filename='js/serious.js') }}"></script>
+<script src="{{ url_for('static', filename='js/hammer.min.js') }}"></script>
 {% endblock %}
 {% block body %}
 <div id="chat" class="hidden white">
@@ -31,19 +33,19 @@ Zany Match | Debate Mingle
   <a class="waves-effect waves-light btn">SUPER NO</a>
   <a class="waves-effect waves-light btn">Downdoot</a>
   <div class="valign-wrapper">
-    <div class="row">
-    <div class="col s12 m6">
-      <div class="card">
-        <div class="card-image">
-          <img src="images/sample-1.jpg">
-        </div>
-        <div class="card-content">
-          <span class="card-title">Card Title</span>
-          <p>I am a very simple card. I am good at containing small bits of information. I am convenient because I require little markup to use effectively.</p>
+    <div id="swipy" class="row">
+      <div class="col s12 m6">
+        <div class="card">
+          <div class="card-image">
+            <img src="images/sample-1.jpg">
+          </div>
+          <div class="card-content">
+            <span class="card-title">Card Title</span>
+            <p>I am a very simple card. I am good at containing small bits of information. I am convenient because I require little markup to use effectively.</p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
   </div>
     <a id="serious" class="btn-floating btn-large waves-effect waves-light black"><i class="material-icons">chat</i></a>
 </div>
