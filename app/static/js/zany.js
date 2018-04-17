@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
     document.getElementById("zany").removeEventListener('click', a);
     console.log("Connecting to Queue");
     document.getElementById("zany").innerHTML = "Connecting...";
-    var socket = io.connect('http://' + document.domain + ':' + location.port);
+    var socket = io.connect('https://' + document.domain + ':' + location.port);
     socket.on('connect', function() {
       console.log("Connected to socket");
       socket.emit('mode', "zany");
