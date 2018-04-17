@@ -6,7 +6,9 @@ document.addEventListener("DOMContentLoaded", ()=>{
     document.getElementById("zany").innerHTML = "Connecting...";
     var socket = io.connect('http://' + document.domain + ':' + location.port);
     socket.on('connect', function() {
+      console.log("Connected to socket");
       socket.emit('mode', "zany");
+      console.log("Sent mode")
       socket.on('okay', (data)=>{
         var options = {'dismissable': true}
         var elem = document.querySelector('.modal');
@@ -14,12 +16,13 @@ document.addEventListener("DOMContentLoaded", ()=>{
 
         instance.open();
         console.log(data);
+        opinion = (data.opinion == 'yes' ? "👍" : "👎");
 
         document.getElementsByClassName("username")[0].textContent = data.name;
         document.querySelector('.modal-topic').textContent = data.topic;
-        document.querySelector('.modal-emoji').textContent = data.opinion;
+        document.querySelector('.modal-emoji').textContent = opinion;
         document.querySelector('.header-topic').textContent = data.topic;
-        document.querySelector('.header-emoji').textContent = data.opinion;
+        document.querySelector('.header-emoji').textContent = opinion;
 
         instance.open()
         chatBegin();
