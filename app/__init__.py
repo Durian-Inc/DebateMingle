@@ -10,7 +10,7 @@ CORS(app)
 socketio = SocketIO(app, async_mode='eventlet')
 
 # Load the views
-from debatemingle import routes
+from app import routes
 
 # Load the config file
 app.config.from_object('config')

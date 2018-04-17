@@ -1,4 +1,4 @@
-from debatemingle import app
+from app import app
 from flask_sqlalchemy import SQLAlchemy
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://@localhost/debate'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False

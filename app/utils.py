@@ -1,5 +1,5 @@
 from hashlib import sha256
-from debatemingle.models import *
+from app.models import *
 from functools import wraps
 from flask import redirect, flash
 from flask import session as browser_session

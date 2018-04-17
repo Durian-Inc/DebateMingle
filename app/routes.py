@@ -1,8 +1,8 @@
-from debatemingle.utils import *
+from app.utils import *
 from random import random, randrange
 from json import dumps, loads
 from linecache import getline
-from debatemingle import app, socketio
+from app import app, socketio
 from flask import render_template, request, render_template, flash, redirect
 from flask import session as browser_session
 from flask_socketio import disconnect
@@ -33,7 +33,7 @@ def match_preferences():
 
 
 def get_opinions():
-    opinions = ['👍', '👎']
+    opinions = ['yes', 'no']
     if random() > 0.5:
         opinions[0], opinions[1] = opinions[1], opinions[0]
     return opinions
@@ -159,6 +159,7 @@ def index():
 @app.route('/serious', methods=['GET', 'POST'])
 @login_required
 def serious():
+    index()
     if request.method == 'GET':
         return render_template("serious.html", topic=random_topic())
 
