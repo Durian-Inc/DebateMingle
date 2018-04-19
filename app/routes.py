@@ -1,11 +1,16 @@
-from app.utils import *
-from random import random, randrange
+import csv
 from json import dumps, loads
 from linecache import getline
-from app import app, socketio
-from flask import render_template, request, render_template, flash, redirect
+from random import choice, random
+
+from flask import flash, redirect, render_template, request
 from flask import session as browser_session
 from flask_socketio import disconnect
+
+from app import app, socketio
+from app.utils import (add_response, add_user, auth_user,
+                       check_user_interaction, get_all_users, get_hash,
+                       login_required)
 
 app.secret_key = 'thats-tru-man'
 
@@ -27,7 +32,6 @@ def match_preferences():
                     if player2['username'] in username:
                         for dislikes in player2['dislikes']:
                             if likes == dislikes:
-                                print("Match")
                                 serious_chat(player['username'],
                                              player2['username'], likes)
 
@@ -40,8 +44,13 @@ def get_opinions():
 
 
 def random_topic():
-    thing = getline('./app/static/data/silly.csv', randrange(18))
-    return thing[:-1]
+    with open('./app/static/data/silly.csv') as f:
+        reader = csv.reader(f)
+        chosen_row = choice(list(reader))[0]
+        return chosen_row
+
+
+random_topic()
 
 
 def serious_topic():
@@ -60,16 +69,20 @@ def setup_chat():
     name2 = "Frank"
     topic = random_topic()
     opinions = get_opinions()
-    socketio.emit('okay', {
-        'name': name1,
-        'topic': topic,
-        'opinion': opinions[0]
-    }, room=id1)
-    socketio.emit('okay', {
-        'name': name2,
-        'topic': topic,
-        'opinion': opinions[1]
-    }, room=id2)
+    socketio.emit(
+        'okay', {
+            'name': name1,
+            'topic': topic,
+            'opinion': opinions[0]
+        },
+        room=id1)
+    socketio.emit(
+        'okay', {
+            'name': name2,
+            'topic': topic,
+            'opinion': opinions[1]
+        },
+        room=id2)
 
 
 def serious_chat(user1, user2, topic):
@@ -80,23 +93,26 @@ def serious_chat(user1, user2, topic):
     chats[id1] = id2
     chats[id2] = id1
     opinions = get_opinions()
-    socketio.emit('okay', {
-        'name': user1,
-        'topic': topic,
-        'opinion': opinions[0]
-    }, room=id1)
-    socketio.emit('okay', {
-        'name': user2,
-        'topic': topic,
-        'opinion': opinions[1]
-    }, room=id2)
+    socketio.emit(
+        'okay', {
+            'name': user1,
+            'topic': topic,
+            'opinion': opinions[0]
+        },
+        room=id1)
+    socketio.emit(
+        'okay', {
+            'name': user2,
+            'topic': topic,
+            'opinion': opinions[1]
+        },
+        room=id2)
 
 
 def check_length():
     if len(silly_queue) > 1:
         setup_chat()
     if len(serious_queue) > 1:
-        print("running")
         match_preferences()
 
 
@@ -106,16 +122,9 @@ def handle_vote(contents):
 
 
 @socketio.on('disconnect')
-def connect():
-    print("New connection")
-
-
-@socketio.on('disconnect')
 def handle_disconnect():
     sid = request.sid
-    print("reached disconnect")
     if sid in chats:
-        # print("CHATS:", chats)
         disconnect(chats[sid])
         try:
             del chats[chats[sid]]
@@ -127,28 +136,23 @@ def handle_disconnect():
             pass
     if sid in silly_queue:
         del silly_queue[silly_queue.index(sid)]
-    if sid in serious_queue:
-        del serious_queue[serious_queue.index(sid)]
+        if sid in serious_queue:
+            del serious_queue[serious_queue.index(sid)]
 
 
 @socketio.on('mode')
 def handle_mode(message):
     if message == 'zany':
-        print("New client")
         silly_queue.append(request.sid)
     else:
         serious_queue.append(request.sid)
-    # username[browser_session['username']] = request.sid
-    # print("USERNAME:", username)
-    # print("SILLY_QUEUE:", silly_queue)
-    # print("SERIOUS_QUEUE:", serious_queue)
-    # print("CHATS:", chats)
+        # username[browser_session['username']] = request.sid
+
     check_length()
 
 
 @socketio.on('msg')
 def handle_msg(contents):
-    print(contents)
     recipient = chats[request.sid]
     socketio.emit('msg', data=contents, room=recipient)
 
@@ -170,7 +174,10 @@ def serious():
 @app.route('/topics', methods=['GET', 'POST'])
 def topics():
     if request.method == 'GET':
-        topic_list = [line[0:-1] for line in open('./debatemingle/static/data/silly.csv', "r").readlines()]
+        topic_list = [
+            line[0:-1] for line in open('./debatemingle/static/data/silly.csv',
+                                        "r").readlines()
+        ]
         return dumps(topic_list)
 
 
@@ -179,11 +186,12 @@ def topics():
 def check_topic(topic):
     return str(check_user_interaction(browser_session['username'], topic))
 
+
 @app.route('/add_response/<username>/<topic>/<response>', methods=['GET'])
 @login_required
 def add_one(topic, response):
-    return add_response(session['username'], topic, response)
-            
+    return add_response(browser_session['username'], topic, response)
+
 
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
@@ -199,10 +207,10 @@ def login():
             if add_user(check_username, check_passhash):
                 flash("Your account does not exist, creating one now!")
                 browser_session['username'] = check_username
-                return redirect('/', code=302)
             else:
                 flash("Wrong credentials")
-    return redirect('/', code=302)
+
+            return redirect('/', code=302)
 
 
 @app.route('/logout/', methods=['GET'])

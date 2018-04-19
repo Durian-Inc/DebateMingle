@@ -1,9 +1,12 @@
-from hashlib import sha256
-from app.models import *
 from functools import wraps
-from flask import redirect, flash
-from flask import session as browser_session
+from hashlib import sha256
 from json import dumps
+
+from flask import flash, redirect
+from flask import session as browser_session
+
+from app.models import *
+
 
 def get_hash(password):
     """

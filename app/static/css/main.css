@@ -152,9 +152,10 @@ body {
 
 #chat .chat__header {
   height: 60px;
-  display: flex;
-  align-items: center;
   color: white;
+}
+#chat .chat__header .username {
+  line-height: 60px;
 }
 
 #chat .chat__window {
@@ -191,8 +192,8 @@ body {
 
 #resetchat {
   color: white;
-  height: 42px;
-  line-height: 42px;
+  height: 60px;
+  line-height: 60px;
   margin-left: 9px;
   margin-right: 30px;
   padding: 0 8px;
@@ -279,6 +280,18 @@ body {
   font-size: 3em;
 }
 
+.modal .modal-content {
+  padding: 24px 24px 0 24px;
+}
+.modal-header {
+  margin: 0 0 15px 0;
+}
+.modal-topic {
+  margin: 0;
+}
+.modal-text {
+  margin: 0 0 15px 0;
+}
 
 
 
@@ -368,6 +381,15 @@ body {
    These examples override the primary ('mobile first') styles.
    Modify as content requires.
    ========================================================================== */
+
+@media (max-width: 720px) {
+  #chat .chat__header {
+    height: 120px;
+  }
+  .header-whoops {
+    top: 60px;
+  }
+}
 
 @media only screen and (min-width: 35em) {
     /* Style adjustments for viewports that meet the condition */
