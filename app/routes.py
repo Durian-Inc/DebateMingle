@@ -50,9 +50,6 @@ def random_topic():
         return chosen_row
 
 
-random_topic()
-
-
 def serious_topic():
     thing = getline('./debatemingle/static/data/silly.csv', randrange(10))
     return thing[:-1]
